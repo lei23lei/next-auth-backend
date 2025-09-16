@@ -1,0 +1,27 @@
+from sqlalchemy import Column, String, DateTime, UUID
+from sqlalchemy.sql import func
+from database import Base
+import uuid
+from datetime import datetime
+
+class User(Base):
+    __tablename__ = "users"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    image = Column(String, nullable=True)
+    email = Column(String, unique=True, index=True)
+    password = Column(String, nullable=True)
+    name = Column(String, nullable=True)
+    provider = Column(String, nullable=False, default="email")
+    
+    # GitHub-specific fields (optional but useful)
+    provider_id = Column(String, nullable=True, index=True)  # GitHub user ID
+    username = Column(String, nullable=True)  # GitHub username
+    
+    # Existing fields
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    reset_password_token = Column(String, nullable=True, unique=True)
+    reset_password_token_expires = Column(DateTime, nullable=True)
+    def __repr__(self):
+        return f"User(id={self.id}, email={self.email})"
